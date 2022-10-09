@@ -32,7 +32,14 @@ resource "azurerm_service_plan" "sam" {
   resource_group_name = azurerm_resource_group.sam.name
   location            = azurerm_resource_group.sam.location
   os_type             = "Windows"
-  sku_name            = "F1"
+  sku_name            = "Y1"
+}
+
+resource "azurerm_application_insights" "sam" {
+  name                = "sameiet-reminders-insights"
+  resource_group_name = azurerm_resource_group.sam.name
+  location            = azurerm_resource_group.sam.location
+  application_type    = "web"
 }
 
 resource "azurerm_windows_function_app" "sam" {
@@ -46,5 +53,7 @@ resource "azurerm_windows_function_app" "sam" {
 
   site_config {}
 
-  app_settings = var.functionAppSettingsMap
+  app_settings = merge(
+    {"APPINSIGHTS_INSTRUMENTATIONKEY" = azurerm_application_insights.sam.instrumentation_key},
+    var.functionAppSettingsMap)
 }

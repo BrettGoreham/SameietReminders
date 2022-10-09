@@ -14,13 +14,15 @@ namespace SameietReminders
         {
             Console.WriteLine(string.Join(", ", emailAddresses));
 
-            var fromAddress = new MailAddress("inndalsveien38sameiet@gmail.com", "Sameiet Inndalsveien 38");
+            var fromAddress = new MailAddress(Environment.GetEnvironmentVariable("email_sender"), Environment.GetEnvironmentVariable("email_sender_name"));
 
-            var message = new MailMessage();
-            message.From = fromAddress;
-            
+            var message = new MailMessage
+            {
+                From = fromAddress
+            };
 
-            foreach(var email in emailAddresses)
+
+            foreach (var email in emailAddresses)
             {
                 message.To.Add(new MailAddress(email));
             }
